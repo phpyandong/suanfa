@@ -1,7 +1,7 @@
 CREATE TABLE `yue_chat_room` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '房间ID',
   `type` varchar(16) NOT NULL DEFAULT '' COMMENT 'radio/topic',
-  `class` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0-普通电台(听单) 1-私人FM',
+  `class` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0-普通电台(听单) 1-私人FM 2-用户电台',
   `creater_uid` int(10) unsigned NOT NULL DEFAULT '1001143' COMMENT '创建人ID',
   `text` varchar(255) NOT NULL DEFAULT '' COMMENT '用户电台房间分享文案',
   `group_id` varchar(32) NOT NULL DEFAULT '' COMMENT 'IM群ID',
@@ -15,12 +15,51 @@ CREATE TABLE `yue_chat_room` (
   `icon` varchar(256) NOT NULL DEFAULT '' COMMENT '房间的icon',
   `img` varchar(128) NOT NULL COMMENT '封面图',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '房间状态 0-下线 1-上线',
-  `recommend` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '推荐 0/1',
+  `duration_live` int(11) DEFAULT '0' COMMENT '直播时长(秒)',
+  `recommend` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否推荐 0-否 1-是',
+  `room_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否结束直播 0-是 1-否',
+  `feed_recommend` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否推荐到feed流 0-否 1-是',
+  `is_mis` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否mis 0-是 1-否',
+  `sid` varchar(32) NOT NULL DEFAULT '' COMMENT '声网录制sid',
   `score` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '推荐得分',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `income` decimal(10,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT '累计收入',
+  `rose_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '玫瑰数量',
+  `is_statistics` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0未统计1已统计',
+  `agora_token` varchar(1280) DEFAULT NULL COMMENT '直播间token',
+  `end_at` int(10) unsigned NOT NULL COMMENT '结束时间',
+  `end_reason` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'app' COMMENT '结束原因',
+  `record_uid` int(11) NOT NULL DEFAULT '0' COMMENT '声网录制用户uid',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_status` (`status`) USING BTREE,
   KEY `idx_score` (`score`) USING BTREE,
   KEY `idx_creater_uid` (`creater_uid`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=212 DEFAULT CHARSET=utf8mb4 COMMENT='电台/话题房间'
+) ENGINE=InnoDB AUTO_INCREMENT=1000498 DEFAULT CHARSET=utf8mb4 COMMENT='电台/话题房间';
+
+
+
+CREATE TABLE `yue_room_comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_uid` int(11) NOT NULL DEFAULT '0' COMMENT '评论人用户id',
+  `to_uid` int(11) NOT NULL DEFAULT '0' COMMENT '被评论用户id',
+  `room_id` int(10) unsigned NOT NULL COMMENT '房间ID',
+  `room_type` varchar(16) NOT NULL DEFAULT '' COMMENT 'radio电台房间 topic话题房间',
+  `group_id` varchar(32) NOT NULL DEFAULT '' COMMENT '群ID',
+  `comment` text NOT NULL COMMENT '评论内容',
+  `quote_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '引用评论ID',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '评论类型，1文本评论 2语音评论',
+  `voice_url` varchar(255) DEFAULT '' COMMENT '音频地址',
+  `voice_time` smallint(6) NOT NULL DEFAULT '0' COMMENT '播放时间',
+  `source_os_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '评论来源系统类型 0: 未知, 1: iOS 2: Android 3: H5 4: Mini',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态 1-在线 2-下线',
+  `user_type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '用户类型 1-新用户 2-老用户',
+  `is_good` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否神评 0-否 1-是',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '评论时间',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx1` (`group_id`,`from_uid`,`to_uid`) USING BTREE,
+  KEY `idx_create_time` (`create_time`) USING BTREE,
+  KEY `idx_room_id` (`room_id`) USING BTREE,
+  KEY `idx_status_good` (`status`,`is_good`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=75176 DEFAULT CHARSET=utf8mb4 COMMENT='评论表'
