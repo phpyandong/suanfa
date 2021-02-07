@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println(context.Background())
+	//todo 标准姿势 使用woker + channel 处理 事件埋点
 	tr := NewTracker()
 	//把并发丢给调用者。我们使用服务端埋点来记录一些事件
 	//无法保证创建的goroutine 声明周期管理，
