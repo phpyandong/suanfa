@@ -13,11 +13,20 @@ func expence0(){
 	type Map map[string]string
 	var m atomic.Value
 	m.Store(make(Map))
+	var mm atomic.Value
+	m.Store(make(Map))
+	mm.Store(make(Map))
+
 	var mu sync.Mutex
+	//var mu2 sync.Mutex
 	read := func(key string) (val string) {
 		m1 := m.Load().(Map)
 		return m1[key]
 	}
+	//read2 := func(key string) (val string){
+	//	m1 := m.Load().(Map)
+	//	return m1[key]
+	//}
 	insert := func(Key,val string) {
 		mu.Lock()
 		defer mu.Unlock()
