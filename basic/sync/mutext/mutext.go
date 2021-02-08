@@ -25,6 +25,8 @@ func main(){
 // The following example shows how to use Value for periodic program config updates
 // and propagation of the changes to worker goroutines.
 func ExampleValue_config() {
+	fmt.Println("哈哈")
+	//官方demo
 	var config atomic.Value // holds current server configuration
 	// Create initial config value and store into config.
 	config.Store(loadConfig())
@@ -33,6 +35,7 @@ func ExampleValue_config() {
 		// and update config value with the new version.
 		for {
 			time.Sleep(10 * time.Second)
+			fmt.Println("store:")
 			config.Store(loadConfig())
 		}
 	}()
@@ -41,12 +44,17 @@ func ExampleValue_config() {
 	for i := 0; i < 10; i++ {
 		go func() {
 			for r := range requests() {
+				fmt.Println("range:",r)
+
 				c := config.Load()
 				// Handle request r using config c.
 				_, _ = r, c
-				fmt.Println(c)
+				fmt.Println("cc:",c)
 			}
 		}()
+	}
+	select {
+
 	}
 }
 
